@@ -1,7 +1,7 @@
 import type React from "react"
 export const metadata = {
-  title: "i love cats and cats way more better than dogs",
-  description: "jk every animal is good ",
+  title: "Random Cat Generator",
+  description: "Free cat generator. New cats every week.",
     generator: 'v0.dev'
 }
 
