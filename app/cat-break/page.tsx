@@ -6,13 +6,13 @@ import { useRouter } from "next/navigation"
 export default function CatBreak() {
   const router = useRouter()
   const [currentCatImage, setCurrentCatImage] = useState("")
-  const [showMyCat, setShowMyCat] = useState(false)
-  const [showConfetti, setShowConfetti] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   const [darkMode, setDarkMode] = useState(false)
-  const recentCatsRef = useRef<string[]>([])
+  const [allPhotosViewed, setAllPhotosViewed] = useState(false)
+  const viewedCatsRef = useRef<Set<string>>(new Set())
 
   const catImages = [
+    // Original images
     "https://i.imgur.com/Sy1VMZs.png",
     "https://i.imgur.com/ZfcjHYq.png",
     "https://i.imgur.com/c7XLHlY.png",
@@ -71,42 +71,85 @@ export default function CatBreak() {
     "https://i.imgur.com/YcmbKmL.png",
     "https://i.imgur.com/KkkXM5u.png",
     "https://i.imgur.com/u6I7yaG.png",
+
+    // New images
+    "https://i.imgur.com/iTmpJes.jpeg",
+    "https://i.imgur.com/J5UWrrS.jpeg",
+    "https://i.imgur.com/4reb7zp.jpeg",
+    "https://i.imgur.com/Cl8MEq8.jpeg",
+    "https://i.imgur.com/VX13zDB.jpeg",
+    "https://i.imgur.com/RumC3ou.jpeg",
+    "https://i.imgur.com/Fu3u7Hd.jpeg",
+    "https://i.imgur.com/yVYOVZe.jpeg",
+    "https://i.imgur.com/INgSwlH.jpeg",
+    "https://i.imgur.com/Ajt2imi.jpeg",
+    "https://i.imgur.com/cnwCp9k.jpeg",
+    "https://i.imgur.com/lFG1MmV.jpeg",
+    "https://i.imgur.com/fA3Twhu.jpeg",
+    "https://i.imgur.com/xYRzqNM.jpeg",
+    "https://i.imgur.com/QXs6HJn.jpeg",
+    "https://i.imgur.com/3GIEfYG.jpeg",
+    "https://i.imgur.com/1flevgW.jpeg",
+    "https://i.imgur.com/HnDwXIi.jpeg",
+    "https://i.imgur.com/IgIPNM9.jpeg",
+    "https://i.imgur.com/LQzmh6r.jpeg",
+    "https://i.imgur.com/UgdVUDJ.jpeg",
+    "https://i.imgur.com/tyTv0IG.jpeg",
+    "https://i.imgur.com/HjjpbU7.jpeg",
+    "https://i.imgur.com/9SZahO7.jpeg",
+    "https://i.imgur.com/2RcSycE.jpeg",
+    "https://i.imgur.com/MdIvRsm.jpeg",
+    "https://i.imgur.com/IQCUgOG.jpeg",
+    "https://i.imgur.com/RhjE2S5.jpeg",
+    "https://i.imgur.com/gICP3Pn.jpeg",
+    "https://i.imgur.com/ey12fSx.jpeg",
+    "https://i.imgur.com/8ZMx4Y3.jpeg",
+    "https://i.imgur.com/7lzyzHQ.jpeg",
+    "https://i.imgur.com/UC4FycF.jpeg",
+    "https://i.imgur.com/AkQa4BZ.jpeg",
+    "https://i.imgur.com/dKfjWh3.jpeg",
+    "https://i.imgur.com/ZoM8vNN.jpeg",
+    "https://i.imgur.com/YwGUov8.jpeg",
+    "https://i.imgur.com/XF2bOlE.jpeg",
+    "https://i.imgur.com/R6CM4xL.jpeg",
+    "https://i.imgur.com/z7cS6XS.jpeg",
+    "https://i.imgur.com/E4qPFmL.jpeg",
+    "https://i.imgur.com/TAPYUEX.jpeg",
   ]
 
-  // Get a truly random cat that hasn't been shown in the last 10 selections
+  // Get a random cat that hasn't been viewed yet
   const getRandomCat = () => {
     setIsLoading(true)
 
-    // Filter out recently shown cats
-    const availableCats = catImages.filter((img) => !recentCatsRef.current.includes(img))
-
-    // If we've filtered too many, reset (this shouldn't happen often)
-    const catsToChooseFrom = availableCats.length > 0 ? availableCats : catImages
-
-    // Get random cat from available options
-    const randomIndex = Math.floor(Math.random() * catsToChooseFrom.length)
-    const newImage = catsToChooseFrom[randomIndex]
-
-    // Update recent cats list
-    recentCatsRef.current.push(newImage)
-    if (recentCatsRef.current.length > 10) {
-      recentCatsRef.current.shift() // Remove oldest cat from history
+    // Check if all photos have been viewed
+    if (viewedCatsRef.current.size >= catImages.length) {
+      // All photos have been viewed, show completion message
+      setAllPhotosViewed(true)
+      return
     }
 
+    // Get unviewed cats
+    const unviewedCats = catImages.filter((img) => !viewedCatsRef.current.has(img))
+
+    // Get random cat from unviewed options
+    const randomIndex = Math.floor(Math.random() * unviewedCats.length)
+    const newImage = unviewedCats[randomIndex]
+
+    // Add to viewed cats
+    viewedCatsRef.current.add(newImage)
     setCurrentCatImage(newImage)
 
-    // Check if the image is a JPEG (user's cat)
-    if (newImage.endsWith(".jpeg")) {
-      setShowMyCat(true)
-      setShowConfetti(true)
-
-      // Hide the "THIS IS MY CAT" text after 2 seconds (reduced from 3)
-      setTimeout(() => {
-        setShowMyCat(false)
-      }, 2000)
-    } else {
-      setShowMyCat(false)
+    // If this was the last unviewed cat, set the flag
+    if (viewedCatsRef.current.size >= catImages.length) {
+      setAllPhotosViewed(true)
     }
+  }
+
+  // Reset all viewed cats and start over
+  const resetCats = () => {
+    viewedCatsRef.current.clear()
+    setAllPhotosViewed(false)
+    getRandomCat()
   }
 
   // Toggle dark mode
@@ -124,47 +167,8 @@ export default function CatBreak() {
     setIsLoading(false)
   }
 
-  useEffect(() => {
-    // Confetti effect
-    if (showConfetti) {
-      createConfetti()
-      setShowConfetti(false)
-    }
-  }, [showConfetti])
-
-  // Function to create confetti effect with more particles
-  const createConfetti = () => {
-    const confettiCount = 400 // Increased from 200
-    const colors = ["#ff0000", "#00ff00", "#0000ff", "#ffff00", "#ff00ff", "#00ffff", "#ffffff", "#ffa500"]
-
-    for (let i = 0; i < confettiCount; i++) {
-      const confetti = document.createElement("div")
-      confetti.classList.add("confetti")
-
-      // Random position, color, and animation delay
-      const x = Math.random() * window.innerWidth
-      const y = Math.random() * window.innerHeight
-      const color = colors[Math.floor(Math.random() * colors.length)]
-      const animationDelay = Math.random() * 3 // Reduced from 5
-
-      confetti.style.left = `${x}px`
-      confetti.style.top = `${y}px`
-      confetti.style.backgroundColor = color
-      confetti.style.animationDelay = `${animationDelay}s`
-
-      // Random size for more variety
-      const size = 5 + Math.random() * 10
-      confetti.style.width = `${size}px`
-      confetti.style.height = `${size}px`
-
-      document.body.appendChild(confetti)
-
-      // Remove confetti after animation (reduced from 5000ms)
-      setTimeout(() => {
-        confetti.remove()
-      }, 3000)
-    }
-  }
+  // Calculate progress
+  const progress = Math.round((viewedCatsRef.current.size / catImages.length) * 100)
 
   return (
     <div className={`cat-page ${darkMode ? "dark-mode" : ""}`}>
@@ -180,33 +184,47 @@ export default function CatBreak() {
 
         <h1 className="cat-title">Cat Break</h1>
 
+        {/* Progress indicator */}
+        <div className="progress-container">
+          <div className="progress-bar" style={{ width: `${progress}%` }}></div>
+          <span className="progress-text">
+            {viewedCatsRef.current.size} / {catImages.length} cats viewed
+          </span>
+        </div>
+
         <div className="cat-image-wrapper">
           {isLoading && <div className="loading-spinner"></div>}
-          <img
-            src={currentCatImage || "/placeholder.svg"}
-            alt="Random Cat"
-            className={`cat-image ${isLoading ? "loading" : "loaded"}`}
-            onLoad={handleImageLoad}
-          />
-          {showMyCat && (
-            <div className="my-cat-overlay">
-              <span className="my-cat-text">THIS IS MY CAT</span>
+          {allPhotosViewed ? (
+            <div className="completion-message">
+              <h2>All photos have been shown!</h2>
+              <p>
+                New photos are added every week. If you would like to submit your own, please contact me on Discord.
+              </p>
+              <button onClick={resetCats} className="reset-button">
+                Start Over
+              </button>
             </div>
+          ) : (
+            <img
+              src={currentCatImage || "/placeholder.svg"}
+              alt="Random Cat"
+              className={`cat-image ${isLoading ? "loading" : "loaded"}`}
+              onLoad={handleImageLoad}
+            />
           )}
         </div>
 
-        <button onClick={getRandomCat} className="cat-button">
-          Show Another Cat
-        </button>
+        {!allPhotosViewed && (
+          <button onClick={getRandomCat} className="cat-button">
+            Show Another Cat
+          </button>
+        )}
       </div>
 
       {/* Sticky Note with Updated Text */}
       <div className="sticky-note">
         <div className="sticky-note-content">
-          <p>
-            If you would like to see photos of your own cat or cats you find funny, you can reach me via Discord. If you
-            would like to donate, I would be very happy 🥺👉👈
-          </p>
+          <p>If you would like to see photos of your own cat or cats you find funny, you can reach me via Discord.</p>
           <p className="discord-username">
             my username is <strong>uefyy</strong>
           </p>
@@ -276,6 +294,7 @@ export default function CatBreak() {
         .dark-mode .cat-container {
           background: #2a2a4a;
           box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+          color: #fff;
         }
         
         .back-button {
@@ -311,6 +330,42 @@ export default function CatBreak() {
           text-shadow: 2px 2px 4px rgba(255, 105, 180, 0.4);
         }
         
+        /* Progress bar styles */
+        .progress-container {
+          width: 100%;
+          height: 20px;
+          background-color: #f0f0f0;
+          border-radius: 10px;
+          margin-bottom: 20px;
+          position: relative;
+          overflow: hidden;
+        }
+        
+        .dark-mode .progress-container {
+          background-color: #3a3a5a;
+        }
+        
+        .progress-bar {
+          height: 100%;
+          background: linear-gradient(90deg, #FFB6C1, #FF69B4);
+          border-radius: 10px;
+          transition: width 0.5s ease;
+        }
+        
+        .progress-text {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          font-size: 12px;
+          font-weight: bold;
+          color: #333;
+        }
+        
+        .dark-mode .progress-text {
+          color: #fff;
+        }
+        
         .cat-image-wrapper {
           position: relative;
           width: 100%;
@@ -322,7 +377,7 @@ export default function CatBreak() {
           display: flex;
           justify-content: center;
           align-items: center;
-          min-height: 100px;
+          min-height: 300px;
           transition: all 0.3s ease;
         }
         
@@ -393,26 +448,46 @@ export default function CatBreak() {
           transform: translateY(1px);
         }
         
-        .my-cat-overlay {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          background-color: rgba(0, 0, 0, 0.5);
-          animation: fadeIn 0.5s ease;
+        /* Completion message styles */
+        .completion-message {
+          padding: 20px;
+          text-align: center;
         }
         
-        .my-cat-text {
-          font-family: 'Impact', sans-serif;
-          font-size: 42px;
+        .completion-message h2 {
+          color: #FF69B4;
+          margin-bottom: 15px;
+        }
+        
+        .dark-mode .completion-message h2 {
+          color: #FF9ED2;
+        }
+        
+        .completion-message p {
+          margin-bottom: 20px;
+          line-height: 1.5;
+        }
+        
+        .reset-button {
+          background: linear-gradient(135deg, #FFB6C1, #FF69B4);
+          border: none;
+          padding: 10px 20px;
+          border-radius: 30px;
           color: white;
-          text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8), 0 0 10px rgba(255, 105, 180, 0.8);
-          letter-spacing: 2px;
-          animation: pulse 0.7s infinite alternate;
+          font-size: 16px;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          box-shadow: 0 4px 10px rgba(255, 105, 180, 0.3);
+          outline: none;
+        }
+        
+        .dark-mode .reset-button {
+          background: linear-gradient(135deg, #FF9ED2, #FF69B4);
+        }
+        
+        .reset-button:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 6px 15px rgba(255, 105, 180, 0.4);
         }
         
         /* Sticky Note Styles */
@@ -473,39 +548,6 @@ export default function CatBreak() {
         .discord-username strong {
           color: #5865F2;
           font-size: 16px;
-        }
-        
-        @keyframes fadeIn {
-          from { opacity: 0; }
-          to { opacity: 1; }
-        }
-        
-        @keyframes pulse {
-          from { transform: scale(1); }
-          to { transform: scale(1.1); }
-        }
-        
-        /* Confetti Animation - More particles, shorter duration */
-        .confetti {
-          position: fixed;
-          width: 10px;
-          height: 10px;
-          pointer-events: none;
-          opacity: 0;
-          animation: confettiFall 3s ease forwards;
-          z-index: 1000;
-          border-radius: 50%;
-        }
-        
-        @keyframes confettiFall {
-          0% {
-            transform: translateY(-10px) rotate(0deg);
-            opacity: 1;
-          }
-          100% {
-            transform: translateY(100vh) rotate(720deg);
-            opacity: 0;
-          }
         }
         
         /* Responsive adjustments */
