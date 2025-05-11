@@ -78,22 +78,23 @@ export default function BallTrail() {
         </div>
 
         <div className="flex flex-col gap-6 items-center pointer-events-auto">
-          <a href="https://x.com/uefy0" target="_blank" rel="noopener noreferrer" className="minimal-link">
+          <button onClick={navigateToCatBreak} className="minimal-link cat-break-link main-link">
+            Random Cat Generator
+          </button>
+        </div>
+
+        <div className="footer-links">
+          <a href="https://x.com/uefy0" target="_blank" rel="noopener noreferrer" className="minimal-link footer-link">
             my portfolio
           </a>
-
           <a
             href="https://csfloat.com/stall/76561198838298558"
             target="_blank"
             rel="noopener noreferrer"
-            className="minimal-link"
+            className="minimal-link footer-link"
           >
             CSFloat Stall
           </a>
-
-          <button onClick={navigateToCatBreak} className="minimal-link cat-break-link">
-            Random Cat Generator
-          </button>
         </div>
       </div>
       <style jsx global>{`
@@ -158,6 +159,33 @@ export default function BallTrail() {
         
         .cat-break-link::after {
           background-color: #FFB6C1;
+        }
+
+        .main-link {
+          font-size: 20px;
+          letter-spacing: 3px;
+        }
+
+        .footer-links {
+          position: fixed;
+          bottom: 20px;
+          left: 0;
+          right: 0;
+          display: flex;
+          justify-content: center;
+          gap: 30px;
+          z-index: 10;
+          pointer-events: auto;
+        }
+
+        .footer-link {
+          font-size: 14px;
+          opacity: 0.7;
+          transition: opacity 0.3s ease;
+        }
+
+        .footer-link:hover {
+          opacity: 1;
         }
       `}</style>
     </div>
