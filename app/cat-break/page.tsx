@@ -72,7 +72,7 @@ export default function CatBreak() {
     "https://i.imgur.com/KkkXM5u.png",
     "https://i.imgur.com/u6I7yaG.png",
 
-    // New images
+    // First batch of additional images
     "https://i.imgur.com/iTmpJes.jpeg",
     "https://i.imgur.com/J5UWrrS.jpeg",
     "https://i.imgur.com/4reb7zp.jpeg",
@@ -115,6 +115,60 @@ export default function CatBreak() {
     "https://i.imgur.com/z7cS6XS.jpeg",
     "https://i.imgur.com/E4qPFmL.jpeg",
     "https://i.imgur.com/TAPYUEX.jpeg",
+
+    // Second batch of additional images
+    "https://i.imgur.com/xdyOEs1.jpeg",
+    "https://i.imgur.com/JuUAgFk.jpeg",
+    "https://i.imgur.com/cfecsxG.jpeg",
+    "https://i.imgur.com/ePX8BkL.jpeg",
+    "https://i.imgur.com/RIxPtW3.jpeg",
+    "https://i.imgur.com/j9rfRch.jpeg",
+    "https://i.imgur.com/M6zxFD5.jpeg",
+    "https://i.imgur.com/qtpeq7W.jpeg",
+    "https://i.imgur.com/7dZDzAI.jpeg",
+    "https://i.imgur.com/jqpgDMu.jpeg",
+    "https://i.imgur.com/MfnHsru.jpeg",
+    "https://i.imgur.com/Ioch8KY.jpeg",
+    "https://i.imgur.com/viMgVeZ.jpeg",
+    "https://i.imgur.com/oMSwB90.jpeg",
+    "https://i.imgur.com/YpAIa53.jpeg",
+    "https://i.imgur.com/E0cJCef.jpeg",
+    "https://i.imgur.com/lVAK8mM.jpeg",
+    "https://i.imgur.com/6ZomqNj.jpeg",
+    "https://i.imgur.com/mLUDv58.jpeg",
+    "https://i.imgur.com/ksPB1DD.jpeg",
+    "https://i.imgur.com/iMGjtez.jpeg",
+    "https://i.imgur.com/Dms4KCo.jpeg",
+    "https://i.imgur.com/xofmj5A.jpeg",
+    "https://i.imgur.com/i8L5ex6.jpeg",
+    "https://i.imgur.com/Cvo2sTx.png",
+    "https://i.imgur.com/fsBbuD7.png",
+    "https://i.imgur.com/7AzS9Lz.jpeg",
+    "https://i.imgur.com/fo25jbU.png",
+    "https://i.imgur.com/mXbs5oi.jpeg",
+    "https://i.imgur.com/q1tzFdM.jpeg",
+    "https://i.imgur.com/uadn4tR.jpeg",
+    "https://i.imgur.com/OKsYAA6.jpeg",
+    "https://i.imgur.com/k9rnA7N.jpeg",
+    "https://i.imgur.com/rXiRVXu.jpeg",
+    "https://i.imgur.com/OsPQ1xK.jpeg",
+    "https://i.imgur.com/x3xZxKT.jpeg",
+    "https://i.imgur.com/aKEszn1.jpeg",
+    "https://i.imgur.com/TySL462.jpeg",
+    "https://i.imgur.com/3OAoZO9.png",
+    "https://i.imgur.com/fy2U1ie.jpeg",
+    "https://i.imgur.com/9gPwyKm.jpeg",
+    "https://i.imgur.com/s0g7Vjn.jpeg",
+    "https://i.imgur.com/fqjq515.jpeg",
+    "https://i.imgur.com/zNsah8D.jpeg",
+    "https://i.imgur.com/ymDfBW6.jpeg",
+    "https://i.imgur.com/Xn8ekao.jpeg",
+    "https://i.imgur.com/LbmiQGq.jpeg",
+    "https://i.imgur.com/zMuU5qH.jpeg",
+    "https://i.imgur.com/TDiu30u.jpeg",
+    "https://i.imgur.com/3DSVpHU.jpeg",
+    "https://i.imgur.com/R5J5NEH.jpeg",
+    "https://i.imgur.com/oD7RhTA.jpeg",
   ]
 
   // Get a random cat that hasn't been viewed yet
@@ -192,33 +246,36 @@ export default function CatBreak() {
           </span>
         </div>
 
-        <div className="cat-image-wrapper">
-          {isLoading && <div className="loading-spinner"></div>}
-          {allPhotosViewed ? (
-            <div className="completion-message">
-              <h2>All photos have been shown!</h2>
-              <p>
-                New photos are added every week. If you would like to submit your own, please contact me on Discord.
-              </p>
-              <button onClick={resetCats} className="reset-button">
-                Start Over
-              </button>
-            </div>
-          ) : (
-            <img
-              src={currentCatImage || "/placeholder.svg"}
-              alt="Random Cat"
-              className={`cat-image ${isLoading ? "loading" : "loaded"}`}
-              onLoad={handleImageLoad}
-            />
-          )}
-        </div>
-
+        {/* Floating action button for next cat */}
         {!allPhotosViewed && (
-          <button onClick={getRandomCat} className="cat-button">
-            Show Another Cat
+          <button onClick={getRandomCat} className="floating-button">
+            <span className="arrow-icon">→</span>
           </button>
         )}
+
+        <div className="cat-content">
+          <div className="cat-image-wrapper">
+            {isLoading && <div className="loading-spinner"></div>}
+            {allPhotosViewed ? (
+              <div className="completion-message">
+                <h2>All photos have been shown!</h2>
+                <p>
+                  New photos are added every week. If you would like to submit your own, please contact me on Discord.
+                </p>
+                <button onClick={resetCats} className="reset-button">
+                  Start Over
+                </button>
+              </div>
+            ) : (
+              <img
+                src={currentCatImage || "/placeholder.svg"}
+                alt="Random Cat"
+                className={`cat-image ${isLoading ? "loading" : "loaded"}`}
+                onLoad={handleImageLoad}
+              />
+            )}
+          </div>
+        </div>
       </div>
 
       {/* Sticky Note with Updated Text */}
@@ -289,6 +346,8 @@ export default function CatBreak() {
           position: relative;
           z-index: 1;
           transition: all 0.3s ease;
+          display: flex;
+          flex-direction: column;
         }
         
         .dark-mode .cat-container {
@@ -366,10 +425,55 @@ export default function CatBreak() {
           color: #fff;
         }
         
+        /* New floating button style */
+        .floating-button {
+          position: absolute;
+          right: -25px;
+          top: 50%;
+          transform: translateY(-50%);
+          width: 50px;
+          height: 50px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #FFB6C1, #FF69B4);
+          border: none;
+          color: white;
+          font-size: 24px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          box-shadow: 0 4px 10px rgba(255, 105, 180, 0.5);
+          z-index: 10;
+          transition: all 0.3s ease;
+        }
+        
+        .floating-button:hover {
+          transform: translateY(-50%) scale(1.1);
+          box-shadow: 0 6px 15px rgba(255, 105, 180, 0.6);
+        }
+        
+        .floating-button:active {
+          transform: translateY(-50%) scale(0.95);
+        }
+        
+        .dark-mode .floating-button {
+          background: linear-gradient(135deg, #FF9ED2, #FF69B4);
+        }
+        
+        .arrow-icon {
+          font-weight: bold;
+        }
+        
+        /* Content area */
+        .cat-content {
+          display: flex;
+          flex-direction: column;
+          flex: 1;
+        }
+        
         .cat-image-wrapper {
           position: relative;
           width: 100%;
-          margin-bottom: 20px;
           border-radius: 10px;
           overflow: hidden;
           box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
@@ -388,8 +492,10 @@ export default function CatBreak() {
         
         .cat-image {
           max-width: 100%;
+          max-height: 500px;
           display: block;
           transition: opacity 0.3s ease, transform 0.3s ease;
+          object-fit: contain;
         }
         
         .cat-image.loading {
@@ -418,34 +524,6 @@ export default function CatBreak() {
         @keyframes spin {
           0% { transform: rotate(0deg); }
           100% { transform: rotate(360deg); }
-        }
-        
-        .cat-button {
-          background: linear-gradient(135deg, #FFB6C1, #FF69B4);
-          border: none;
-          padding: 12px 25px;
-          border-radius: 30px;
-          color: white;
-          font-size: 18px;
-          cursor: pointer;
-          transition: all 0.3s ease;
-          box-shadow: 0 4px 10px rgba(255, 105, 180, 0.3);
-          outline: none;
-          margin-top: 15px;
-        }
-        
-        .dark-mode .cat-button {
-          background: linear-gradient(135deg, #FF9ED2, #FF69B4);
-          box-shadow: 0 4px 10px rgba(255, 105, 180, 0.5);
-        }
-        
-        .cat-button:hover {
-          transform: translateY(-3px);
-          box-shadow: 0 6px 15px rgba(255, 105, 180, 0.4);
-        }
-        
-        .cat-button:active {
-          transform: translateY(1px);
         }
         
         /* Completion message styles */
@@ -562,6 +640,18 @@ export default function CatBreak() {
           
           .cat-page {
             flex-direction: column;
+          }
+          
+          .floating-button {
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            top: auto;
+            transform: none;
+          }
+          
+          .floating-button:hover {
+            transform: scale(1.1);
           }
         }
       `}</style>
