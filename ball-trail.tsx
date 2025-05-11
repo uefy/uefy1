@@ -92,7 +92,7 @@ export default function BallTrail() {
           </a>
 
           <button onClick={navigateToCatBreak} className="minimal-link cat-break-link">
-            cat break
+            Random Cat Generator
           </button>
         </div>
       </div>
